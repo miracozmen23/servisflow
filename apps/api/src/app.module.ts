@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { resolve } from 'node:path';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
+import { ServiceRequestsModule } from './service-requests/service-requests.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { HealthModule } from './health/health.module';
     ]),
     AuthModule,
     HealthModule,
+    ServiceRequestsModule,
   ],
   providers: [
     {

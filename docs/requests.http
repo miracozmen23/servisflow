@@ -38,6 +38,27 @@ Accept: application/json
 GET {{baseUrl}}/auth/me
 Accept: application/json
 
+### Create a service request (requires an active CUSTOMER session)
+# @name createServiceRequest
+# @prompt brand Product brand
+# @prompt model Product model
+# @prompt serialNumber Product serial number
+# @prompt invoiceNumber Invoice number
+# @prompt purchaseDate Purchase date (YYYY-MM-DD)
+# @prompt problemDescription Problem description (10-2000 characters)
+POST {{baseUrl}}/service-requests
+Content-Type: application/json
+Accept: application/json
+
+{
+  "brand": "{{brand}}",
+  "model": "{{model}}",
+  "serialNumber": "{{serialNumber}}",
+  "invoiceNumber": "{{invoiceNumber}}",
+  "purchaseDate": "{{purchaseDate}}",
+  "problemDescription": "{{problemDescription}}"
+}
+
 ### Revoke the current session and clear its cookie
 POST {{baseUrl}}/auth/logout
 Accept: application/json
