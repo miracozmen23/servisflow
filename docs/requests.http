@@ -1,0 +1,47 @@
+@baseUrl = http://localhost:3000/api
+
+### Health
+GET {{baseUrl}}/health
+Accept: application/json
+
+### Register a customer and start a session
+# @name register
+# @prompt email Customer email address
+# @prompt password Customer password (12-72 characters, not stored)
+# @prompt firstName Customer first name
+# @prompt lastName Customer last name
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "firstName": "{{firstName}}",
+  "lastName": "{{lastName}}"
+}
+
+### Login and store the session cookie in REST Client's cookie jar
+# @name login
+# @prompt email Account email address
+# @prompt password Account password (not stored)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Get the current user using the stored session cookie
+GET {{baseUrl}}/auth/me
+Accept: application/json
+
+### Revoke the current session and clear its cookie
+POST {{baseUrl}}/auth/logout
+Accept: application/json
+
+### Confirm that the revoked session is rejected
+GET {{baseUrl}}/auth/me
+Accept: application/json
