@@ -59,6 +59,65 @@ Accept: application/json
   "problemDescription": "{{problemDescription}}"
 }
 
+### List requests visible to the current account
+GET {{baseUrl}}/service-requests?page=1&limit=20
+Accept: application/json
+
+### Filter requests by status and search RMA or serial number
+# @prompt status Service status, for example DIAGNOSIS
+# @prompt search RMA number or serial number fragment
+GET {{baseUrl}}/service-requests?page=1&limit=20&status={{status}}&search={{search}}
+Accept: application/json
+
+### Get a request detail (the response is projected for the current role)
+# @prompt requestId Service request UUID
+GET {{baseUrl}}/service-requests/{{requestId}}
+Accept: application/json
+
+### Change request status (requires a TECHNICIAN session)
+# Run the login request above with the seeded technician account first.
+# Valid path: WARRANTY_APPROVED -> DEVICE_RECEIVED -> DIAGNOSIS -> REPAIR -> QUALITY_CONTROL -> CLOSED
+# DIAGNOSIS may alternatively transition to NOT_REPAIRABLE.
+# @prompt requestId Service request UUID
+# @prompt nextStatus Next valid service status
+# @prompt customerMessage Customer-visible status message (1-500 characters)
+PATCH {{baseUrl}}/service-requests/{{requestId}}/status
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "{{nextStatus}}",
+  "customerMessage": "{{customerMessage}}"
+}
+
+### Close or mark a request not repairable (requires a TECHNICIAN session)
+# Use CLOSED or NOT_REPAIRABLE only when it is a valid next status.
+# @prompt requestId Service request UUID
+# @prompt terminalStatus CLOSED or NOT_REPAIRABLE
+# @prompt resolutionSummary Customer-visible resolution (10-500 characters)
+# @prompt customerMessage Customer-visible status message (1-500 characters)
+PATCH {{baseUrl}}/service-requests/{{requestId}}/status
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "{{terminalStatus}}",
+  "resolutionSummary": "{{resolutionSummary}}",
+  "customerMessage": "{{customerMessage}}"
+}
+
+### Add an internal note (requires a TECHNICIAN session)
+# The note and NOTE_ADDED event are never returned to a customer.
+# @prompt requestId Service request UUID
+# @prompt note Internal technician note (2-2000 characters)
+POST {{baseUrl}}/service-requests/{{requestId}}/notes
+Content-Type: application/json
+Accept: application/json
+
+{
+  "content": "{{note}}"
+}
+
 ### Revoke the current session and clear its cookie
 POST {{baseUrl}}/auth/logout
 Accept: application/json
