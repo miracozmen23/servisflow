@@ -1,0 +1,129 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = ""
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  CUSTOMER
+  TECHNICIAN
+}
+
+enum WarrantyStatus {
+  APPROVED
+  REJECTED
+}
+
+enum ServiceRequestStatus {
+  WARRANTY_APPROVED
+  WARRANTY_REJECTED
+  DEVICE_RECEIVED
+  DIAGNOSIS
+  REPAIR
+  QUALITY_CONTROL
+  NOT_REPAIRABLE
+  CLOSED
+}
+
+enum ServiceEventType {
+  REQUEST_CREATED
+  STATUS_CHANGED
+  NOTE_ADDED
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique @db.VarChar(320)
+  passwordHash String   @db.VarChar(255)
+  firstName    String   @db.VarChar(100)
+  lastName     String   @db.VarChar(100)
+  role         UserRole @default(CUSTOMER)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+
+  sessions        Session[]
+  serviceRequests ServiceRequest[] @relation("CustomerServiceRequests")
+  serviceNotes    ServiceNote[]    @relation("AuthoredServiceNotes")
+  serviceEvents   ServiceEvent[]   @relation("ActorServiceEvents")
+}
+
+model Session {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique @db.Char(64)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  expiresAt DateTime  @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model ServiceRequest {
+  id                 String               @id @default(uuid()) @db.Uuid
+  rmaNumber          String               @unique @db.VarChar(20)
+  customerId         String               @db.Uuid
+  brand              String               @db.VarChar(100)
+  model              String               @db.VarChar(100)
+  serialNumber       String               @db.VarChar(100)
+  invoiceNumber      String               @db.VarChar(100)
+  purchaseDate       DateTime             @db.Date
+  warrantyExpiresAt  DateTime             @db.Date
+  warrantyStatus     WarrantyStatus
+  status             ServiceRequestStatus
+  problemDescription String               @db.VarChar(2000)
+  resolutionSummary  String?              @db.VarChar(500)
+  closedAt           DateTime?            @db.Timestamptz(3)
+  createdAt          DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime             @updatedAt @db.Timestamptz(3)
+
+  customer User           @relation("CustomerServiceRequests", fields: [customerId], references: [id], onDelete: Restrict)
+  notes    ServiceNote[]
+  events   ServiceEvent[]
+
+  @@index([customerId, createdAt])
+  @@index([status, createdAt])
+  @@index([serialNumber])
+  @@index([createdAt])
+}
+
+model ServiceNote {
+  id        String   @id @default(uuid()) @db.Uuid
+  requestId String   @db.Uuid
+  authorId  String   @db.Uuid
+  content   String   @db.VarChar(2000)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  request ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  author  User           @relation("AuthoredServiceNotes", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([requestId, createdAt])
+}
+
+model ServiceEvent {
+  id              String                @id @default(uuid()) @db.Uuid
+  requestId       String                @db.Uuid
+  actorId         String                @db.Uuid
+  type            ServiceEventType
+  oldStatus       ServiceRequestStatus?
+  newStatus       ServiceRequestStatus?
+  customerMessage String?               @db.VarChar(500)
+  createdAt       DateTime              @default(now()) @db.Timestamptz(3)
+
+  request ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actor   User           @relation("ActorServiceEvents", fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([requestId, createdAt])
+}
+
+model RmaSequence {
+  year  Int @id
+  value Int
+}

@@ -21,6 +21,9 @@
   },
   "allowScripts": {
     "@parcel/watcher": false,
-    "unrs-resolver": false
+    "unrs-resolver": false,
+    "prisma": false,
+    "@prisma/engines": false,
+    "esbuild": false
   }
 }

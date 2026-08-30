@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { resolve } from 'node:path';
+import { HealthModule } from './health/health.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      cache: true,
+      envFilePath: resolve(__dirname, '../../../.env'),
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+      isGlobal: true,
+    }),
+    HealthModule,
+  ],
 })
 export class AppModule {}
