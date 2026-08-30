@@ -303,7 +303,7 @@ describe('Authentication (e2e)', () => {
   afterAll(async () => {
     await prisma.user.deleteMany({
       where: {
-        email: { endsWith: '@servisflow.test' },
+        email: { contains: runId },
       },
     });
     await app.close();
