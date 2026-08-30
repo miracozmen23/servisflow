@@ -9,6 +9,9 @@ coverage/
 .nyc_output/
 *.tsbuildinfo
 
+# Generated code
+apps/api/src/generated/prisma/
+
 # Environment files
 .env
 .env.*
@@ -31,4 +34,3 @@ npm-debug.log*
 # Operating system files
 .DS_Store
 Thumbs.db
-
