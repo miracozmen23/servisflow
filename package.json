@@ -24,6 +24,7 @@
     "unrs-resolver": false,
     "prisma": false,
     "@prisma/engines": false,
-    "esbuild": false
+    "esbuild": false,
+    "@scarf/scarf": false
   }
 }

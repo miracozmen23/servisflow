@@ -34,6 +34,13 @@ describe('HealthController (e2e)', () => {
       });
   });
 
+  it('/api/docs (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/api/docs')
+      .expect(200)
+      .expect('Content-Type', /html/);
+  });
+
   afterAll(async () => {
     await app.close();
   });
