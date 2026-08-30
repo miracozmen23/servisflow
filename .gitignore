@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+dist/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local databases
+*.db
+*.db-journal
+
+# Editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
