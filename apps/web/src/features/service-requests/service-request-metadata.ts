@@ -21,6 +21,24 @@ export const serviceRequestStatuses: readonly ServiceRequestStatus[] = [
   "CLOSED",
 ];
 
+export const allowedNextStatuses: Readonly<
+  Record<ServiceRequestStatus, readonly ServiceRequestStatus[]>
+> = {
+  WARRANTY_APPROVED: ["DEVICE_RECEIVED"],
+  WARRANTY_REJECTED: [],
+  DEVICE_RECEIVED: ["DIAGNOSIS"],
+  DIAGNOSIS: ["REPAIR", "NOT_REPAIRABLE"],
+  REPAIR: ["QUALITY_CONTROL"],
+  QUALITY_CONTROL: ["CLOSED"],
+  NOT_REPAIRABLE: [],
+  CLOSED: [],
+};
+
+export const resolutionRequiredStatuses = new Set<ServiceRequestStatus>([
+  "NOT_REPAIRABLE",
+  "CLOSED",
+]);
+
 export const statusMetadata: Record<ServiceRequestStatus, StatusMetadata> = {
   WARRANTY_APPROVED: {
     label: "Garanti onaylandı",
