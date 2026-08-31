@@ -15,6 +15,14 @@ export type ServiceEventType =
   | "STATUS_CHANGED"
   | "NOTE_ADDED";
 
+export interface Person {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: "CUSTOMER" | "TECHNICIAN";
+}
+
 export interface ServiceRequestListItem {
   id: string;
   rmaNumber: string;
@@ -37,6 +45,18 @@ export interface CustomerTimelineEvent {
   createdAt: string;
 }
 
+export interface TechnicianTimelineEvent extends CustomerTimelineEvent {
+  actor: Person;
+}
+
+export interface ServiceNote {
+  id: string;
+  requestId: string;
+  content: string;
+  createdAt: string;
+  author: Person;
+}
+
 export interface CustomerServiceRequestDetail
   extends ServiceRequestListItem {
   customerId: string;
@@ -48,6 +68,18 @@ export interface CustomerServiceRequestDetail
   timeline: CustomerTimelineEvent[];
 }
 
+export interface TechnicianServiceRequestListItem
+  extends ServiceRequestListItem {
+  customer: Person;
+}
+
+export interface TechnicianServiceRequestDetail
+  extends Omit<CustomerServiceRequestDetail, "timeline"> {
+  customer: Person;
+  notes: ServiceNote[];
+  timeline: TechnicianTimelineEvent[];
+}
+
 export interface CreateServiceRequestInput {
   brand: string;
   model: string;
@@ -57,6 +89,16 @@ export interface CreateServiceRequestInput {
   problemDescription: string;
 }
 
+export interface UpdateServiceRequestStatusInput {
+  status: ServiceRequestStatus;
+  resolutionSummary?: string;
+  customerMessage?: string;
+}
+
+export interface CreateServiceNoteInput {
+  content: string;
+}
+
 export interface ServiceRequestListParams {
   page: number;
   limit?: number;
@@ -64,8 +106,10 @@ export interface ServiceRequestListParams {
   search?: string;
 }
 
-export interface ServiceRequestListResponse {
-  data: ServiceRequestListItem[];
+export interface ServiceRequestListResponse<
+  TItem extends ServiceRequestListItem = ServiceRequestListItem,
+> {
+  data: TItem[];
   meta: {
     page: number;
     limit: number;
