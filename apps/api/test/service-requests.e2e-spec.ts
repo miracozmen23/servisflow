@@ -74,7 +74,7 @@ describe('Service request creation (e2e)', () => {
   let technicianId: string;
   let customerCookie: string;
   let technicianCookie: string;
-  let initialSequence: { value: number } | null;
+  let initialSequence: { value: number } | null | undefined;
 
   const runId = randomUUID();
   const businessDate = getIstanbulBusinessDate();
@@ -359,7 +359,7 @@ describe('Service request creation (e2e)', () => {
 
       if (initialSequence === null) {
         await prisma.rmaSequence.deleteMany({ where: { year: rmaYear } });
-      } else {
+      } else if (initialSequence !== undefined) {
         await prisma.rmaSequence.update({
           where: { year: rmaYear },
           data: { value: initialSequence.value },
