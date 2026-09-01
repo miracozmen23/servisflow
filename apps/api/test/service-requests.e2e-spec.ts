@@ -99,7 +99,7 @@ describe('Service request creation (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     configureApp(app);
-    await app.init();
+    await app.listen(0, '127.0.0.1');
     prisma = app.get(PrismaService);
     initialSequence = await prisma.rmaSequence.findUnique({
       where: { year: rmaYear },
