@@ -11,9 +11,9 @@ COPY apps/web/package.json apps/web/package.json
 RUN npm ci --ignore-scripts
 
 FROM dependencies AS build
-ARG DATABASE_URL=postgresql://docker-build:docker-build@127.0.0.1:5432/docker-build?schema=public
 COPY apps/api apps/api
-RUN npm run build --workspace=@servisflow/api
+RUN DATABASE_URL=postgresql://docker-build:docker-build@127.0.0.1:5432/docker-build?schema=public \
+    npm run build --workspace=@servisflow/api
 
 FROM build AS migration
 ENV NODE_ENV=production
