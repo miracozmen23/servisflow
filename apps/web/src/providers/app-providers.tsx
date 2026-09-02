@@ -32,9 +32,10 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="system"
-      enableSystem
+      defaultTheme="light"
       disableTransitionOnChange
+      enableSystem={false}
+      forcedTheme="light"
     >
       <QueryClientProvider client={queryClient}>
         {children}

@@ -22,6 +22,7 @@ import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/page-heading";
 import {
   Card,
   CardContent,
@@ -75,27 +76,16 @@ export function TechnicianRequestDetail({ requestId }: { requestId: string }) {
   const currentStatus = statusMetadata[request.status];
 
   return (
-    <div className="space-y-7">
-      <div className="space-y-4">
-        <Button asChild size="sm" variant="ghost">
-          <Link href="/technician">
-            <ArrowLeft />
-            Servis kuyruğuna dön
-          </Link>
-        </Button>
+    <div className="space-y-8">
+      <Button asChild size="sm" variant="ghost">
+        <Link href="/technician">
+          <ArrowLeft />
+          Servis kuyruğuna dön
+        </Link>
+      </Button>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0 space-y-2">
-            <p className="font-mono text-sm font-medium text-muted-foreground">
-              {request.rmaNumber}
-            </p>
-            <h1 className="font-heading text-3xl font-semibold tracking-tight">
-              {request.brand} {request.model}
-            </h1>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              {currentStatus.description}
-            </p>
-          </div>
+      <PageHeading
+        actions={
           <div className="flex flex-wrap gap-2">
             <RequestStatusBadge className="h-7 px-3" status={request.status} />
             <WarrantyBadge
@@ -103,8 +93,11 @@ export function TechnicianRequestDetail({ requestId }: { requestId: string }) {
               status={request.warrantyStatus}
             />
           </div>
-        </div>
-      </div>
+        }
+        description={currentStatus.description}
+        eyebrow={request.rmaNumber}
+        title={`${request.brand} ${request.model}`}
+      />
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
         <div className="space-y-5">
@@ -181,7 +174,7 @@ export function TechnicianRequestDetail({ requestId }: { requestId: string }) {
 
           <Card>
             <CardHeader className="border-b">
-              <CardTitle>Tam audit geçmişi</CardTitle>
+              <CardTitle>İşlem geçmişi</CardTitle>
               <CardDescription>
                 Durum değişiklikleri ve dahili not olayları, işlemi yapan
                 kullanıcıyla birlikte gösterilir.
@@ -190,7 +183,7 @@ export function TechnicianRequestDetail({ requestId }: { requestId: string }) {
             <CardContent>
               {request.timeline.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  Henüz audit olayı bulunmuyor.
+                  Henüz işlem kaydı bulunmuyor.
                 </p>
               ) : (
                 <ol>
@@ -207,7 +200,7 @@ export function TechnicianRequestDetail({ requestId }: { requestId: string }) {
           </Card>
         </div>
 
-        <aside className="space-y-5 xl:sticky xl:top-24">
+        <aside className="space-y-5 xl:sticky xl:top-28">
           <Card>
             <CardHeader className="border-b">
               <CardTitle className="flex items-center gap-2">
@@ -308,7 +301,7 @@ function DetailField({
 }) {
   return (
     <div className="flex gap-3">
-      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground">
+      <span className="grid size-9 shrink-0 place-items-center bg-primary text-white">
         <Icon className="size-4" />
       </span>
       <div className="min-w-0 space-y-1">
@@ -462,13 +455,13 @@ function TechnicianDetailSkeleton() {
       </div>
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
         <div className="space-y-5">
-          <Skeleton className="h-72 w-full rounded-xl" />
-          <Skeleton className="h-44 w-full rounded-xl" />
-          <Skeleton className="h-80 w-full rounded-xl" />
+          <Skeleton className="h-72 w-full rounded-md" />
+          <Skeleton className="h-44 w-full rounded-md" />
+          <Skeleton className="h-80 w-full rounded-md" />
         </div>
         <div className="space-y-5">
-          <Skeleton className="h-96 w-full rounded-xl" />
-          <Skeleton className="h-96 w-full rounded-xl" />
+          <Skeleton className="h-96 w-full rounded-md" />
+          <Skeleton className="h-96 w-full rounded-md" />
         </div>
       </div>
     </div>

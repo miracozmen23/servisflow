@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/page-heading";
 import {
   Card,
   CardContent,
@@ -66,27 +67,16 @@ export function ServiceRequestDetail({ requestId }: { requestId: string }) {
   const currentStatus = statusMetadata[request.status];
 
   return (
-    <div className="space-y-7">
-      <div className="space-y-4">
-        <Button asChild size="sm" variant="ghost">
-          <Link href="/portal">
-            <ArrowLeft />
-            Taleplerime dön
-          </Link>
-        </Button>
+    <div className="space-y-8">
+      <Button asChild size="sm" variant="ghost">
+        <Link href="/portal">
+          <ArrowLeft />
+          Taleplerime dön
+        </Link>
+      </Button>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0 space-y-2">
-            <p className="font-mono text-sm font-medium text-muted-foreground">
-              {request.rmaNumber}
-            </p>
-            <h1 className="font-heading text-3xl font-semibold tracking-tight">
-              {request.brand} {request.model}
-            </h1>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              {currentStatus.description}
-            </p>
-          </div>
+      <PageHeading
+        actions={
           <div className="flex flex-wrap gap-2">
             <RequestStatusBadge className="h-7 px-3" status={request.status} />
             <WarrantyBadge
@@ -94,8 +84,11 @@ export function ServiceRequestDetail({ requestId }: { requestId: string }) {
               status={request.warrantyStatus}
             />
           </div>
-        </div>
-      </div>
+        }
+        description={currentStatus.description}
+        eyebrow={request.rmaNumber}
+        title={`${request.brand} ${request.model}`}
+      />
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.75fr)]">
         <div className="space-y-5">
@@ -236,7 +229,7 @@ function DetailField({
 }) {
   return (
     <div className="flex gap-3">
-      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground">
+      <span className="grid size-9 shrink-0 place-items-center bg-primary text-white">
         <Icon className="size-4" />
       </span>
       <div className="min-w-0 space-y-1">
@@ -356,12 +349,12 @@ function RequestDetailSkeleton() {
       </div>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.75fr)]">
         <div className="space-y-5">
-          <Skeleton className="h-64 w-full rounded-xl" />
-          <Skeleton className="h-44 w-full rounded-xl" />
+          <Skeleton className="h-64 w-full rounded-md" />
+          <Skeleton className="h-44 w-full rounded-md" />
         </div>
         <div className="space-y-5">
-          <Skeleton className="h-64 w-full rounded-xl" />
-          <Skeleton className="h-72 w-full rounded-xl" />
+          <Skeleton className="h-64 w-full rounded-md" />
+          <Skeleton className="h-72 w-full rounded-md" />
         </div>
       </div>
     </div>

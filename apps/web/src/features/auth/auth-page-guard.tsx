@@ -4,6 +4,7 @@ import { LoaderCircle, RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Brand } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/client";
 import { getRoleHomePath } from "./auth-routing";
@@ -25,10 +26,14 @@ export function AuthPageGuard({ children }: AuthPageGuardProps) {
 
   if (isPending || user !== undefined) {
     return (
-      <main className="grid min-h-svh place-items-center bg-muted/30">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <LoaderCircle className="size-4 animate-spin" />
-          Oturum kontrol ediliyor...
+      <main className="relative grid min-h-svh place-items-center overflow-hidden bg-sidebar px-4 text-sidebar-foreground">
+        <div className="sf-rule-grid pointer-events-none absolute inset-0 opacity-20" />
+        <div className="relative flex flex-col items-center gap-6">
+          <Brand inverse subtitle="Güvenli servis takibi" />
+          <div className="flex items-center gap-2 text-xs font-medium text-sidebar-foreground/45">
+            <LoaderCircle className="size-4 animate-spin text-primary" />
+            Oturum kontrol ediliyor
+          </div>
         </div>
       </main>
     );
@@ -39,27 +44,30 @@ export function AuthPageGuard({ children }: AuthPageGuardProps) {
     !(error instanceof ApiError && error.statusCode === 401)
   ) {
     return (
-      <main className="grid min-h-svh place-items-center bg-muted/30 px-4">
-        <Alert className="max-w-md" variant="destructive">
-          <AlertTitle>Oturum kontrolü tamamlanamadı</AlertTitle>
-          <AlertDescription className="space-y-3">
-            <p>
-              {error instanceof Error
-                ? error.message
-                : "Sunucuya ulaşılamadı. Lütfen tekrar deneyin."}
-            </p>
-            <Button
-              disabled={isFetching}
-              onClick={() => void refetch()}
-              size="sm"
-              type="button"
-              variant="outline"
-            >
-              <RotateCw className={isFetching ? "animate-spin" : undefined} />
-              Tekrar dene
-            </Button>
-          </AlertDescription>
-        </Alert>
+      <main className="relative grid min-h-svh place-items-center overflow-hidden bg-background px-4">
+        <div className="relative w-full max-w-md space-y-6">
+          <Brand subtitle="Güvenli servis takibi" />
+          <Alert className="p-5" variant="destructive">
+            <AlertTitle>Oturum kontrolü tamamlanamadı</AlertTitle>
+            <AlertDescription className="space-y-4">
+              <p>
+                {error instanceof Error
+                  ? error.message
+                  : "Sunucuya ulaşılamadı. Lütfen tekrar deneyin."}
+              </p>
+              <Button
+                disabled={isFetching}
+                onClick={() => void refetch()}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                <RotateCw className={isFetching ? "animate-spin" : undefined} />
+                Tekrar dene
+              </Button>
+            </AlertDescription>
+          </Alert>
+        </div>
       </main>
     );
   }

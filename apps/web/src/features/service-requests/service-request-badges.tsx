@@ -20,9 +20,10 @@ export function RequestStatusBadge({
 
   return (
     <Badge
-      className={cn("border font-medium", metadata.badgeClassName, className)}
+      className={cn("gap-1.5 border font-bold", metadata.badgeClassName, className)}
       variant="outline"
     >
+      <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {metadata.label}
     </Badge>
   );
@@ -39,9 +40,10 @@ export function WarrantyBadge({
 
   return (
     <Badge
-      className={cn("border font-medium", metadata.badgeClassName, className)}
+      className={cn("gap-1.5 border font-bold", metadata.badgeClassName, className)}
       variant="outline"
     >
+      <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {metadata.label}
     </Badge>
   );

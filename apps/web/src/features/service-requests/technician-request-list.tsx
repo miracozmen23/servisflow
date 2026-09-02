@@ -12,12 +12,12 @@ import {
   RotateCcw,
   Search,
   UserRound,
-  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/page-heading";
 import {
   Card,
   CardContent,
@@ -71,30 +71,12 @@ export function TechnicianRequestList() {
   }
 
   return (
-    <div className="space-y-7">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">
-            Teknik servis
-          </p>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
-            Servis kuyruğu
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-            Tüm servis taleplerini inceleyin, teknik süreci ilerletin ve servis
-            kayıtlarını yönetin.
-          </p>
-        </div>
-        <div className="flex items-center gap-3 rounded-xl border bg-card px-4 py-3 shadow-xs">
-          <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <Wrench className="size-4" />
-          </span>
-          <div>
-            <p className="text-xs text-muted-foreground">Görüntülenen kayıt</p>
-            <p className="text-lg font-semibold tabular-nums">{total}</p>
-          </div>
-        </div>
-      </section>
+    <div className="space-y-8">
+      <PageHeading
+        description="Tüm servis taleplerini inceleyin, durumlarını güncelleyin ve teknik kayıtları aynı çalışma alanında tutun."
+        eyebrow="Teknik servis"
+        title="Servis kuyruğu"
+      />
 
       <Card>
         <CardHeader className="border-b">
@@ -112,7 +94,7 @@ export function TechnicianRequestList() {
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 aria-label="RMA veya seri numarası ara"
-                className="h-10 pl-9"
+                className="h-12 pl-10"
                 maxLength={100}
                 onChange={(event) => setSearchInput(event.target.value)}
                 placeholder="Örn. RMA-2026 veya PF123456"
@@ -123,7 +105,7 @@ export function TechnicianRequestList() {
 
             <select
               aria-label="Talep durumu"
-              className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="h-12 w-full rounded-sm border border-input bg-card px-4 text-sm outline-none transition-colors focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20"
               onChange={(event) => {
                 setStatus(
                   event.target.value === ""
@@ -143,14 +125,14 @@ export function TechnicianRequestList() {
             </select>
 
             <div className="flex gap-2">
-              <Button className="h-10 flex-1 lg:flex-none" type="submit">
+              <Button className="h-12 flex-1 lg:flex-none" type="submit">
                 <Search />
                 Ara
               </Button>
               {hasFilters ? (
                 <Button
                   aria-label="Filtreleri temizle"
-                  className="h-10"
+                  className="h-12"
                   onClick={clearFilters}
                   type="button"
                   variant="outline"
@@ -196,20 +178,20 @@ export function TechnicianRequestList() {
             <div className="space-y-3">
               {query.data.data.map((request) => (
                 <Link
-                  className="group block rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                  className="group block rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
                   href={`/technician/requests/${request.id}`}
                   key={request.id}
                 >
-                  <Card className="transition-[transform,box-shadow] group-hover:-translate-y-0.5 group-hover:shadow-md">
+                  <Card className="transition-[border-color,transform] group-hover:-translate-y-0.5 group-hover:border-foreground/30">
                     <CardContent className="grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)_auto] md:items-center">
                       <div className="min-w-0 space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-mono text-xs font-medium text-muted-foreground">
+                          <p className="font-mono text-[0.68rem] font-bold tracking-[0.08em] text-muted-foreground">
                             {request.rmaNumber}
                           </p>
                           <RequestStatusBadge status={request.status} />
                         </div>
-                        <h2 className="truncate font-heading text-lg font-semibold">
+                        <h2 className="truncate font-heading text-xl font-semibold tracking-[-0.03em]">
                           {request.brand} {request.model}
                         </h2>
                         <p className="text-sm text-muted-foreground">
@@ -286,7 +268,7 @@ function TechnicianListSkeleton() {
     <div aria-label="Servis kuyruğu yükleniyor" className="space-y-3">
       <Skeleton className="h-5 w-36" />
       {Array.from({ length: 4 }, (_, index) => (
-        <Skeleton className="h-36 w-full rounded-xl md:h-28" key={index} />
+        <Skeleton className="h-36 w-full rounded-md md:h-28" key={index} />
       ))}
     </div>
   );
@@ -342,7 +324,7 @@ function EmptyTechnicianQueue({
   return (
     <Card className="border-dashed py-12 text-center">
       <CardContent className="mx-auto flex max-w-md flex-col items-center gap-4">
-        <span className="grid size-12 place-items-center rounded-2xl bg-muted text-muted-foreground">
+        <span className="grid size-12 place-items-center bg-primary text-white">
           {hasFilters ? (
             <Search className="size-6" />
           ) : (
