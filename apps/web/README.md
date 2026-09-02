@@ -1,34 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ServisFlow Web
 
-## Getting Started
+Bu paket, ServisFlow'un Next.js App Router ve React tabanlı kullanıcı arayüzüdür. Herkese açık tanıtım sayfasını, kimlik doğrulama ekranlarını, müşteri portalını ve teknisyen çalışma alanını içerir.
 
-First, run the development server:
+Genel mimari, tam kurulum rehberi, ekran görüntüleri ve canlı ortam bağlantıları için depo kökündeki [ana README](../../README.md) dosyasını inceleyin.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Temel teknolojiler
+
+- Next.js 16 ve React 19
+- TypeScript
+- Tailwind CSS 4
+- shadcn/ui ve Radix UI
+- TanStack Query
+- React Hook Form ve Zod
+- Lucide React ve Sonner
+
+## Rotalar
+
+| Rota | Erişim | Amaç |
+| --- | --- | --- |
+| `/` | Herkese açık | Ürün tanıtımı ve servis süreci bilgileri. |
+| `/register` | Herkese açık | Müşteri hesabı oluşturma. |
+| `/login` | Herkese açık | Müşteri veya teknisyen girişi. |
+| `/portal` | Müşteri | Müşterinin kendi servis talepleri. |
+| `/portal/requests/new` | Müşteri | Yeni servis talebi oluşturma. |
+| `/portal/requests/:id` | Müşteri | Müşteriye özel talep detayı ve servis geçmişi. |
+| `/technician` | Teknisyen | Filtrelenebilir ve aranabilir servis kuyruğu. |
+| `/technician/requests/:id` | Teknisyen | İş akışı kontrolü, tam geçmiş ve dahili notlar. |
+
+## Geliştirme komutları
+
+Aşağıdaki komutları depo kök dizininden çalıştırın:
+
+```powershell
+# Geliştirme sunucusu
+npm.cmd run dev:web
+
+# Kontroller
+npm.cmd run typecheck --workspace=@servisflow/web
+npm.cmd run lint --workspace=@servisflow/web
+npm.cmd run build --workspace=@servisflow/web
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Web uygulaması varsayılan olarak <http://localhost:3000> adresinde çalışır.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API yönlendirmesi
 
-## Learn More
+Tarayıcı istekleri doğrudan ayrı bir backend origin'ine gönderilmez. Next.js, `/api/:path*` isteklerini `API_PROXY_TARGET` ile belirtilen NestJS API adresine yönlendirir. Yerel varsayılan hedef `http://127.0.0.1:3001` adresidir ve örnek yapılandırma [`.env.example`](.env.example) dosyasında bulunur.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Bu yaklaşım üretimde oturum çerezinin Vercel alan adında birinci taraf ve yalnızca `/api` yoluyla sınırlı kalmasını sağlar.
