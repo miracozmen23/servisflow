@@ -14,7 +14,7 @@ const passwordSchema = z
   .max(72, "Şifre en fazla 72 karakter olabilir.")
   .refine(
     (password) => new TextEncoder().encode(password).length <= 72,
-    "Şifre UTF-8 biçiminde en fazla 72 bayt olabilir.",
+    "Şifre çok uzun; daha kısa bir şifre deneyin.",
   );
 
 const nameSchema = (label: string) =>

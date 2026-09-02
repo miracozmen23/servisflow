@@ -86,8 +86,8 @@ export function TechnicianStatusForm({
         <CircleAlert />
         <AlertTitle>İş akışı tamamlandı</AlertTitle>
         <AlertDescription>
-          Bu talep terminal durumda olduğu için başka bir duruma geçirilemez.
-          Dahili teknik not eklemeye devam edebilirsiniz.
+          Bu talep kapandığı için durumu değiştirilemez. Dahili teknik not
+          eklemeye devam edebilirsiniz.
         </AlertDescription>
       </Alert>
     );
@@ -112,7 +112,7 @@ export function TechnicianStatusForm({
           <Label htmlFor="technician-next-status">Sonraki durum</Label>
           <select
             aria-invalid={form.formState.errors.status !== undefined}
-            className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
+            className="h-12 w-full rounded-sm border border-input bg-card px-4 text-sm outline-none transition-colors focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
             id="technician-next-status"
             {...form.register("status")}
           >
@@ -139,7 +139,7 @@ export function TechnicianStatusForm({
             className="min-h-24 resize-y"
             id="technician-customer-message"
             maxLength={500}
-            placeholder="Müşterinin timeline’da görebileceği kısa açıklama"
+            placeholder="Müşteriye gösterilecek kısa açıklama"
             {...form.register("customerMessage")}
           />
           <FieldError

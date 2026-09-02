@@ -16,6 +16,7 @@ import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/page-heading";
 import {
   Card,
   CardContent,
@@ -70,29 +71,22 @@ export function ServiceRequestList() {
   }
 
   return (
-    <div className="space-y-7">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">
-            Müşteri portalı
-          </p>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
-            Servis taleplerim
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-            Garanti sonucunu ve cihazınızın servisteki güncel durumunu buradan
-            takip edin.
-          </p>
-        </div>
-        <Button asChild className="sm:self-center" size="lg">
-          <Link href="/portal/requests/new">
-            <Plus />
-            Yeni talep oluştur
-          </Link>
-        </Button>
-      </section>
+    <div className="space-y-8">
+      <PageHeading
+        actions={
+          <Button asChild size="lg">
+            <Link href="/portal/requests/new">
+              <Plus />
+              Yeni talep oluştur
+            </Link>
+          </Button>
+        }
+        description="Garanti sonucunu ve cihazınızın servisteki güncel durumunu tek bir kayıt üzerinden takip edin."
+        eyebrow="Müşteri portalı"
+        title="Servis taleplerim"
+      />
 
-      <Card>
+      <Card className="bg-card/90">
         <CardHeader className="border-b">
           <CardTitle>Talep ara</CardTitle>
           <CardDescription>
@@ -109,7 +103,7 @@ export function ServiceRequestList() {
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 aria-label="RMA veya seri numarası ara"
-                className="h-10 pl-9"
+                className="h-12 pl-10"
                 maxLength={100}
                 onChange={(event) => setSearchInput(event.target.value)}
                 placeholder="Örn. RMA-2026 veya PF123456"
@@ -120,7 +114,7 @@ export function ServiceRequestList() {
 
             <select
               aria-label="Talep durumu"
-              className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="h-12 w-full rounded-sm border border-input bg-card px-4 text-sm outline-none transition-colors focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20"
               onChange={(event) => {
                 setStatus(
                   event.target.value === ""
@@ -140,14 +134,14 @@ export function ServiceRequestList() {
             </select>
 
             <div className="flex gap-2">
-              <Button className="h-10 flex-1 lg:flex-none" type="submit">
+              <Button className="h-12 flex-1 lg:flex-none" type="submit">
                 <Search />
                 Ara
               </Button>
               {hasFilters ? (
                 <Button
                   aria-label="Filtreleri temizle"
-                  className="h-10"
+                  className="h-12"
                   onClick={clearFilters}
                   type="button"
                   variant="outline"
@@ -189,37 +183,44 @@ export function ServiceRequestList() {
           {query.data.data.length === 0 ? (
             <EmptyRequestList hasFilters={hasFilters} onClear={clearFilters} />
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-3">
               {query.data.data.map((request) => (
                 <Link
-                  className="group rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                  className="group rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
                   href={`/portal/requests/${request.id}`}
                   key={request.id}
                 >
-                  <Card className="h-full transition-[transform,box-shadow] group-hover:-translate-y-0.5 group-hover:shadow-md">
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-3">
+                  <Card className="h-full transition-[border-color,transform] group-hover:-translate-y-0.5 group-hover:border-foreground/30">
+                    <CardHeader className="sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6">
+                      <div className="flex items-start justify-between gap-3 sm:block">
                         <div className="min-w-0 space-y-1">
-                          <p className="font-mono text-xs font-medium text-muted-foreground">
+                          <p className="font-mono text-[0.68rem] font-bold tracking-[0.08em] text-muted-foreground">
                             {request.rmaNumber}
                           </p>
-                          <CardTitle className="truncate text-lg">
+                          <CardTitle className="truncate text-xl">
                             {request.brand} {request.model}
                           </CardTitle>
                         </div>
-                        <ArrowRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 sm:hidden" />
                       </div>
-                      <CardDescription>
+                      <CardDescription className="mt-1">
                         Seri no: {request.serialNumber}
                       </CardDescription>
+                      <div className="hidden items-center gap-2 sm:flex">
+                        <RequestStatusBadge status={request.status} />
+                        <WarrantyBadge status={request.warrantyStatus} />
+                        <span className="ml-2 grid size-9 place-items-center rounded-full border border-foreground/12 transition-colors group-hover:bg-foreground group-hover:text-background">
+                          <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                        </span>
+                      </div>
                     </CardHeader>
-                    <CardContent className="mt-auto space-y-4">
-                      <div className="flex flex-wrap gap-2">
+                    <CardContent className="mt-auto flex flex-col gap-4 border-t border-foreground/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex flex-wrap gap-2 sm:hidden">
                         <RequestStatusBadge status={request.status} />
                         <WarrantyBadge status={request.warrantyStatus} />
                       </div>
-                      <div className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
-                        <span>Oluşturulma</span>
+                      <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground sm:ml-auto">
+                        <span className="font-semibold">Oluşturulma</span>
                         <time dateTime={request.createdAt}>
                           {formatDateTime(request.createdAt)}
                         </time>
@@ -271,20 +272,21 @@ function RequestListSkeleton() {
   return (
     <div aria-label="Servis talepleri yükleniyor" className="space-y-4">
       <Skeleton className="h-5 w-40" />
-      <div className="grid gap-4 md:grid-cols-2">
-        {Array.from({ length: 4 }, (_, index) => (
+      <div className="grid gap-3">
+        {Array.from({ length: 3 }, (_, index) => (
           <Card aria-hidden="true" key={index}>
-            <CardHeader>
-              <Skeleton className="h-3 w-32" />
-              <Skeleton className="h-6 w-2/3" />
-              <Skeleton className="h-4 w-1/2" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Skeleton className="h-5 w-28 rounded-full" />
-                <Skeleton className="h-5 w-32 rounded-full" />
+            <CardHeader className="sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6">
+              <div className="space-y-3">
+                <Skeleton className="h-3 w-32" />
+                <Skeleton className="h-6 w-2/3" />
+                <Skeleton className="h-4 w-1/2" />
               </div>
-              <Skeleton className="h-px w-full" />
+              <div className="mt-4 flex gap-2 sm:mt-0">
+                <Skeleton className="h-6 w-28 rounded-full" />
+                <Skeleton className="h-6 w-32 rounded-full" />
+              </div>
+            </CardHeader>
+            <CardContent className="border-t border-foreground/10 pt-5">
               <Skeleton className="ml-auto h-4 w-36" />
             </CardContent>
           </Card>
@@ -344,7 +346,7 @@ function EmptyRequestList({
   return (
     <Card className="border-dashed py-12 text-center">
       <CardContent className="mx-auto flex max-w-md flex-col items-center gap-4">
-        <span className="grid size-12 place-items-center rounded-2xl bg-muted text-muted-foreground">
+        <span className="grid size-12 place-items-center bg-primary text-white">
           <ClipboardList className="size-6" />
         </span>
         <div className="space-y-1">

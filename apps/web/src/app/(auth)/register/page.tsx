@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <AuthShell
-      title="Müşteri hesabınızı oluşturun"
-      description="Garanti kapsamını kontrol edin ve servis sürecinizi tek yerden takip edin."
+      title="Servis takibinizi başlatın"
+      description="Hesabınızı oluşturun ve ilk servis talebinizi açın."
       footer={
         <p>
           Zaten hesabınız var mı?{" "}
           <Link
-            className="font-medium text-foreground underline underline-offset-4"
+            className="font-bold text-foreground underline decoration-primary decoration-2 underline-offset-4"
             href="/login"
           >
             Giriş yapın

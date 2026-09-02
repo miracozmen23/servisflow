@@ -2,8 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CircleAlert, LoaderCircle, LogIn } from "lucide-react";
+import {
+  CircleAlert,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  LockKeyhole,
+  LogIn,
+  Mail,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -17,6 +26,7 @@ import { loginSchema, type LoginFormValues } from "./auth-schemas";
 export function LoginForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -44,7 +54,7 @@ export function LoginForm() {
 
   return (
     <form
-      className="space-y-5"
+      className="space-y-6"
       noValidate
       onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
     >
@@ -58,14 +68,18 @@ export function LoginForm() {
 
       <div className="space-y-2">
         <Label htmlFor="login-email">E-posta adresi</Label>
-        <Input
-          id="login-email"
-          type="email"
-          autoComplete="email"
-          placeholder="ornek@email.com"
-          aria-invalid={form.formState.errors.email !== undefined}
-          {...form.register("email")}
-        />
+        <div className="relative">
+          <Mail className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground/65" />
+          <Input
+            id="login-email"
+            type="email"
+            autoComplete="email"
+            className="pl-10"
+            placeholder="ornek@email.com"
+            aria-invalid={form.formState.errors.email !== undefined}
+            {...form.register("email")}
+          />
+        </div>
         {form.formState.errors.email?.message !== undefined ? (
           <p className="text-xs text-destructive">
             {form.formState.errors.email.message}
@@ -75,14 +89,27 @@ export function LoginForm() {
 
       <div className="space-y-2">
         <Label htmlFor="login-password">Şifre</Label>
-        <Input
-          id="login-password"
-          type="password"
-          autoComplete="current-password"
-          placeholder="En az 12 karakter"
-          aria-invalid={form.formState.errors.password !== undefined}
-          {...form.register("password")}
-        />
+        <div className="relative">
+          <LockKeyhole className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground/65" />
+          <Input
+            id="login-password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            className="px-10"
+            placeholder="Şifrenizi girin"
+            aria-invalid={form.formState.errors.password !== undefined}
+            {...form.register("password")}
+          />
+          <button
+            aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+            aria-pressed={showPassword}
+            className="absolute top-1/2 right-2.5 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            onClick={() => setShowPassword((value) => !value)}
+            type="button"
+          >
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        </div>
         {form.formState.errors.password?.message !== undefined ? (
           <p className="text-xs text-destructive">
             {form.formState.errors.password.message}
@@ -103,6 +130,7 @@ export function LoginForm() {
         )}
         {mutation.isPending ? "Giriş yapılıyor..." : "Giriş yap"}
       </Button>
+
     </form>
   );
 }

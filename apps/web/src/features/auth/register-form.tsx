@@ -2,8 +2,18 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CircleAlert, LoaderCircle, UserPlus } from "lucide-react";
+import {
+  CircleAlert,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  LockKeyhole,
+  Mail,
+  UserPlus,
+  UserRound,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -17,6 +27,7 @@ import { registerSchema, type RegisterFormValues } from "./auth-schemas";
 export function RegisterForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -46,7 +57,7 @@ export function RegisterForm() {
 
   return (
     <form
-      className="space-y-5"
+      className="space-y-6"
       noValidate
       onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
     >
@@ -61,13 +72,17 @@ export function RegisterForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="firstName">Ad</Label>
-          <Input
-            id="firstName"
-            autoComplete="given-name"
-            placeholder="Ayşe"
-            aria-invalid={form.formState.errors.firstName !== undefined}
-            {...form.register("firstName")}
-          />
+          <div className="relative">
+            <UserRound className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground/65" />
+            <Input
+              id="firstName"
+              autoComplete="given-name"
+              className="pl-10"
+              placeholder="Ayşe"
+              aria-invalid={form.formState.errors.firstName !== undefined}
+              {...form.register("firstName")}
+            />
+          </div>
           {form.formState.errors.firstName?.message !== undefined ? (
             <p className="text-xs text-destructive">
               {form.formState.errors.firstName.message}
@@ -77,13 +92,17 @@ export function RegisterForm() {
 
         <div className="space-y-2">
           <Label htmlFor="lastName">Soyad</Label>
-          <Input
-            id="lastName"
-            autoComplete="family-name"
-            placeholder="Yılmaz"
-            aria-invalid={form.formState.errors.lastName !== undefined}
-            {...form.register("lastName")}
-          />
+          <div className="relative">
+            <UserRound className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground/65" />
+            <Input
+              id="lastName"
+              autoComplete="family-name"
+              className="pl-10"
+              placeholder="Yılmaz"
+              aria-invalid={form.formState.errors.lastName !== undefined}
+              {...form.register("lastName")}
+            />
+          </div>
           {form.formState.errors.lastName?.message !== undefined ? (
             <p className="text-xs text-destructive">
               {form.formState.errors.lastName.message}
@@ -94,14 +113,18 @@ export function RegisterForm() {
 
       <div className="space-y-2">
         <Label htmlFor="register-email">E-posta adresi</Label>
-        <Input
-          id="register-email"
-          type="email"
-          autoComplete="email"
-          placeholder="ornek@email.com"
-          aria-invalid={form.formState.errors.email !== undefined}
-          {...form.register("email")}
-        />
+        <div className="relative">
+          <Mail className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground/65" />
+          <Input
+            id="register-email"
+            type="email"
+            autoComplete="email"
+            className="pl-10"
+            placeholder="ornek@email.com"
+            aria-invalid={form.formState.errors.email !== undefined}
+            {...form.register("email")}
+          />
+        </div>
         {form.formState.errors.email?.message !== undefined ? (
           <p className="text-xs text-destructive">
             {form.formState.errors.email.message}
@@ -111,22 +134,35 @@ export function RegisterForm() {
 
       <div className="space-y-2">
         <Label htmlFor="register-password">Şifre</Label>
-        <Input
-          id="register-password"
-          type="password"
-          autoComplete="new-password"
-          placeholder="En az 12 karakter"
-          aria-describedby="password-help"
-          aria-invalid={form.formState.errors.password !== undefined}
-          {...form.register("password")}
-        />
+        <div className="relative">
+          <LockKeyhole className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground/65" />
+          <Input
+            id="register-password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            className="px-10"
+            placeholder="En az 12 karakter"
+            aria-describedby="password-help"
+            aria-invalid={form.formState.errors.password !== undefined}
+            {...form.register("password")}
+          />
+          <button
+            aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
+            aria-pressed={showPassword}
+            className="absolute top-1/2 right-2.5 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            onClick={() => setShowPassword((value) => !value)}
+            type="button"
+          >
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        </div>
         {form.formState.errors.password?.message !== undefined ? (
           <p className="text-xs text-destructive">
             {form.formState.errors.password.message}
           </p>
         ) : (
           <p id="password-help" className="text-xs text-muted-foreground">
-            En az 12 karakter; UTF-8 biçiminde en fazla 72 bayt.
+            En az 12 karakter kullanın.
           </p>
         )}
       </div>
@@ -144,6 +180,7 @@ export function RegisterForm() {
         )}
         {mutation.isPending ? "Hesap oluşturuluyor..." : "Hesap oluştur"}
       </Button>
+
     </form>
   );
 }

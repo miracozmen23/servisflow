@@ -4,17 +4,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
+  Check,
   CircleAlert,
   LoaderCircle,
   Send,
   ShieldCheck,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/page-heading";
 import {
   Card,
   CardContent,
@@ -72,35 +75,62 @@ export function CreateServiceRequestForm() {
   const rootError = form.formState.errors.root?.message;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-7">
-      <div className="space-y-4">
-        <Button asChild size="sm" variant="ghost">
-          <Link href="/portal">
-            <ArrowLeft />
-            Taleplerime dön
-          </Link>
-        </Button>
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">
-            Yeni servis talebi
-          </p>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
-            Cihaz bilgilerini paylaşın
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-            Girdiğiniz satın alma tarihine göre garanti sonucu otomatik olarak
-            hesaplanacak.
-          </p>
-        </div>
-      </div>
+    <div className="mx-auto max-w-6xl space-y-8">
+      <Button asChild size="sm" variant="ghost">
+        <Link href="/portal">
+          <ArrowLeft />
+          Taleplerime dön
+        </Link>
+      </Button>
 
+      <PageHeading
+        description="Cihaz ve fatura bilgilerini paylaşın; garanti sonucu talep oluşturulduğu anda otomatik hesaplansın."
+        eyebrow="Yeni servis talebi"
+        title="Cihazınızı servise kaydedin"
+      />
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(15rem,0.42fr)_minmax(0,1fr)] lg:items-start">
+        <aside className="overflow-hidden rounded-md bg-sidebar text-sidebar-foreground lg:sticky lg:top-28">
+          <div className="relative aspect-[4/3] lg:aspect-[5/4]">
+            <Image
+              alt="Dizüstü bilgisayarın iç bileşenleri onarılıyor"
+              className="object-cover opacity-80"
+              fill
+              sizes="(max-width: 1024px) 100vw, 32vw"
+              src="/images/laptop-repair.jpg"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-sidebar via-transparent to-transparent" />
+          </div>
+          <div className="p-6 sm:p-7">
+            <p className="sf-kicker text-primary">Başlamadan önce</p>
+            <h2 className="mt-4 font-heading text-xl font-semibold tracking-[-0.035em] text-white">
+              Bilgileri cihaz ve faturadan kontrol edin.
+            </h2>
+            <ul className="mt-6 space-y-3 text-sm text-sidebar-foreground/65">
+              {[
+                "Marka, model ve seri numarası",
+                "Fatura numarası ve satın alma tarihi",
+                "Sorunun açık ve ayrıntılı açıklaması",
+              ].map((item) => (
+                <li className="flex items-start gap-2.5" key={item}>
+                  <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
+                    <Check className="size-3" strokeWidth={2.7} />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        <div className="space-y-5">
       <Alert>
         <ShieldCheck />
-        <AlertTitle>24 aylık demo garanti kuralı</AlertTitle>
+        <AlertTitle>Garanti kontrolü hakkında</AlertTitle>
         <AlertDescription>
           Garanti bitiş tarihi satın alma tarihine 24 takvim ayı eklenerek
-          hesaplanır ve bitiş günü kapsama dahildir. Bu, projenin demo iş
-          kuralıdır; hukuki değerlendirme değildir.
+          hesaplanır ve bitiş günü kapsama dahildir. Ürün veya satıcıya özel ek
+          koşullar bu otomatik kontrolde değerlendirilmez.
         </AlertDescription>
       </Alert>
 
@@ -134,7 +164,6 @@ export function CreateServiceRequestForm() {
                 <Input
                   aria-invalid={form.formState.errors.brand !== undefined}
                   autoComplete="off"
-                  className="h-10"
                   id="request-brand"
                   maxLength={100}
                   placeholder="Örn. Lenovo"
@@ -148,7 +177,6 @@ export function CreateServiceRequestForm() {
                 <Input
                   aria-invalid={form.formState.errors.model !== undefined}
                   autoComplete="off"
-                  className="h-10"
                   id="request-model"
                   maxLength={100}
                   placeholder="Örn. ThinkPad E14"
@@ -164,7 +192,7 @@ export function CreateServiceRequestForm() {
                     form.formState.errors.serialNumber !== undefined
                   }
                   autoComplete="off"
-                  className="h-10 font-mono"
+                  className="font-mono"
                   id="request-serial-number"
                   maxLength={100}
                   placeholder="Örn. PF123456"
@@ -182,7 +210,7 @@ export function CreateServiceRequestForm() {
                     form.formState.errors.invoiceNumber !== undefined
                   }
                   autoComplete="off"
-                  className="h-10 font-mono"
+                  className="font-mono"
                   id="request-invoice-number"
                   maxLength={100}
                   placeholder="Örn. INV-2026-001"
@@ -199,7 +227,6 @@ export function CreateServiceRequestForm() {
                   aria-invalid={
                     form.formState.errors.purchaseDate !== undefined
                   }
-                  className="h-10"
                   id="request-purchase-date"
                   max={getIstanbulToday()}
                   type="date"
@@ -253,6 +280,8 @@ export function CreateServiceRequestForm() {
           </form>
         </CardContent>
       </Card>
+        </div>
+      </div>
     </div>
   );
 }
