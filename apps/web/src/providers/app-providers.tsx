@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { useState, type ReactNode } from "react";
+import { ServerAvailability } from "@/components/server-availability";
 import { Toaster } from "@/components/ui/sonner";
 import { ApiError } from "@/lib/api/client";
 
@@ -18,8 +19,10 @@ export function AppProviders({ children }: AppProvidersProps) {
           queries: {
             refetchOnWindowFocus: false,
             retry: (failureCount, error) =>
-              failureCount < 1 &&
+              failureCount < 5 &&
               (!(error instanceof ApiError) || error.statusCode >= 500),
+            retryDelay: (attemptIndex) =>
+              Math.min(2_000 * 2 ** attemptIndex, 10_000),
             staleTime: 30_000,
           },
           mutations: {
@@ -39,6 +42,7 @@ export function AppProviders({ children }: AppProvidersProps) {
     >
       <QueryClientProvider client={queryClient}>
         {children}
+        <ServerAvailability />
         <Toaster closeButton position="top-right" richColors />
       </QueryClientProvider>
     </ThemeProvider>
