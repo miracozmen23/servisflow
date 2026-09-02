@@ -3,13 +3,22 @@ import {
   type INestApplication,
   ValidationPipe,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import type { Express } from 'express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { SESSION_COOKIE_NAME } from './auth/auth.constants';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 
 export function configureApp(app: INestApplication): void {
+  const configService = app.get(ConfigService);
+
+  if (configService.getOrThrow<string>('NODE_ENV') === 'production') {
+    const expressApplication = app.getHttpAdapter().getInstance() as Express;
+    expressApplication.set('trust proxy', 1);
+  }
+
   app.use(
     helmet({
       contentSecurityPolicy: {

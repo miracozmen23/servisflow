@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { resolve } from 'node:path';
 import { AuthModule } from './auth/auth.module';
+import { validateEnvironment } from './config/environment';
 import { HealthModule } from './health/health.module';
 import { ServiceRequestsModule } from './service-requests/service-requests.module';
 
@@ -14,6 +15,7 @@ import { ServiceRequestsModule } from './service-requests/service-requests.modul
       envFilePath: resolve(__dirname, '../../../.env'),
       ignoreEnvFile: process.env.NODE_ENV === 'production',
       isGlobal: true,
+      validate: validateEnvironment,
     }),
     ThrottlerModule.forRoot([
       {
